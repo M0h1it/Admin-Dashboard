@@ -4,6 +4,8 @@ import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { Drawer } from "@mui/material";
 
+//sab thik h ?
+
 const UserInfoPanel = ({ open, onClose }) => {
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
