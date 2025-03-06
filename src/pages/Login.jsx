@@ -1,37 +1,30 @@
 import { useState } from "react";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import app from "../../firebaseConfig"; // Ensure Firebase is correctly configured
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../../firebaseConfig"; // 🔹 Use direct import
 import { useNavigate } from "react-router-dom";
-
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false); // Toggle between login/signup
+  const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
-
-  const auth = getAuth(app);
-  const googleProvider = new GoogleAuthProvider();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/"); // Redirect after login
     } catch (err) {
-      setError("Invalid email or password. Please try again.");
+      setError(err.message); // Show actual Firebase error for debugging
     }
   };
 
-  
-
-  // 🔹 Google Sign-In Function
   const handleGoogleSignIn = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      await signInWithPopup(auth, provider);
       alert("Google Sign-In successful!");
       navigate("/");
     } catch (err) {
@@ -70,29 +63,19 @@ const Login = () => {
               required
             />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-600 transition cursor-pointer"
-          >
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
             {isSignUp ? "Sign Up" : "Sign In"}
           </button>
         </form>
 
-        {/* 🔹 Google Sign-In Button */}
-        <button
-          onClick={handleGoogleSignIn}
-          className="w-full mt-4 bg-white-600 text-black py-2 rounded-lg hover:bg-gray-200 transition flex items-center justify-center cursor-pointer"
-        >
-          <img src="src/images/google.svg" alt="Google Logo" className="w-5 h-5 mr-2" />
+        <button onClick={handleGoogleSignIn} className="w-full mt-4 bg-white text-black py-2 rounded-lg hover:bg-gray-200 flex items-center justify-center">
+          <img src="/images/google.svg" alt="Google Logo" className="w-5 h-5 mr-2" />
           Sign in with Google
         </button>
 
         <p className="mt-4 text-sm text-center">
           {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
-          <button
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="text-blue-500 hover:underline cursor-pointer"
-          >
+          <button onClick={() => setIsSignUp(!isSignUp)} className="text-blue-500 hover:underline">
             {isSignUp ? "Sign in" : "Sign up"}
           </button>
         </p>
