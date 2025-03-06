@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import app from "../../firebaseConfig"; // Ensure Firebase is correctly configured
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSignUp, setIsSignUp] = useState(false); // Toggle between login/signup
+  const navigate = useNavigate();
 
   const auth = getAuth(app);
   const googleProvider = new GoogleAuthProvider();
@@ -16,24 +19,21 @@ const Login = () => {
     setError(""); // Clear previous errors
 
     try {
-      if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, email, password);
-        alert("Account created successfully!");
-      } else {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert("Login successful!");
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/"); // Redirect after login
     } catch (err) {
-      console.error("Authentication Failed:", err.message);
-      setError(err.message);
+      setError("Invalid email or password. Please try again.");
     }
   };
+
+  
 
   // 🔹 Google Sign-In Function
   const handleGoogleSignIn = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
       alert("Google Sign-In successful!");
+      navigate("/");
     } catch (err) {
       console.error("Google Sign-In Failed:", err.message);
       setError(err.message);
