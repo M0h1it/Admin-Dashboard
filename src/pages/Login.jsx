@@ -63,19 +63,19 @@ const Login = () => {
               required
             />
           </div>
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 cursor-pointer">
             {isSignUp ? "Sign Up" : "Sign In"}
           </button>
         </form>
 
-        <button onClick={handleGoogleSignIn} className="w-full mt-4 bg-white text-black py-2 rounded-lg hover:bg-gray-200 flex items-center justify-center">
-          <img src="/images/google.svg" alt="Google Logo" className="w-5 h-5 mr-2" />
+        <button onClick={handleGoogleSignIn} className="w-full mt-4 bg-white text-black py-2 rounded-lg hover:bg-gray-200 flex items-center justify-center cursor-pointer">
+          <img src="/google.svg" alt="Google Logo" className="w-5 h-5 mr-2" />
           Sign in with Google
         </button>
 
         <p className="mt-4 text-sm text-center">
           {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
-          <button onClick={() => setIsSignUp(!isSignUp)} className="text-blue-500 hover:underline">
+          <button onClick={() => setIsSignUp(!isSignUp)} className="text-blue-500 hover:underline cursor-pointer">
             {isSignUp ? "Sign in" : "Sign up"}
           </button>
         </p>

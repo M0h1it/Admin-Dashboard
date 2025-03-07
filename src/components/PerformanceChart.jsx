@@ -38,17 +38,14 @@ const PerformanceChart = () => {
   }, [auth.currentUser]);
 
   return (
-    <div className="p-4 bg-white rounded-2xl shadow-md">
-      <h2 className="text-lg font-semibold mb-2">Performance Overview</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="value" fill="#4CAF50" />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height={250}>
+      <BarChart data={data}>
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="value" fill="#4CAF50" />
+      </BarChart>
+    </ResponsiveContainer>
   );
 };
 
