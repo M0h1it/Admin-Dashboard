@@ -41,6 +41,12 @@ const LinkedTeachers = () => {
       ) : (
         <p>No linked teachers found.</p>
       )}
+      {/* All Lessons Button */}
+      <div className="text-right mt-2">
+        <button className="text-blue-500 text-sm font-medium cursor-pointer bg-white underline rounded-md px-2 py-1">
+        See All
+      </button>
+  </div>
     </div>
   );
 };

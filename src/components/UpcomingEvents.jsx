@@ -41,6 +41,12 @@ const UpcomingEvents = () => {
           <p>No upcoming events found.</p>
         )}
       </ul>
+      {/* All Lessons Button */}
+      <div className="text-right mt-2">
+        <button className="text-blue-500 text-sm font-medium cursor-pointer bg-white underline rounded-md px-2 py-1">
+        See All
+        </button>
+      </div>
     </div>
   );
 };
