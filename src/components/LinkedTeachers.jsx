@@ -2,41 +2,56 @@ import React, { useState } from "react";
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 
+const getInitials = (name) => {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
+};
+
 const LinkedTeachers = () => {
   const [month, setMonth] = useState("December");
 
   // Static teacher data
   const teachers = [
-    { name: "John Doe", subject: "Mathematics", profilePic: "https://via.placeholder.com/40" },
-    { name: "Emily Smith", subject: "Physics", profilePic: "https://via.placeholder.com/40" },
-    { name: "Michael Brown", subject: "Chemistry", profilePic: "https://via.placeholder.com/40" },
+    { name: "John Doe", subject: "Mathematics" },
+    { name: "Emily Smith", subject: "Physics" },
+    { name: "Michael Brown", subject: "Chemistry" },
   ];
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-md">
+    <div className="">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Linked Teachers</h2>
+        
 
         {/* Month Dropdown */}
         <select
           value={month}
           onChange={(e) => setMonth(e.target.value)}
-          className="p-1 text-sm border rounded-md cursor-pointer transition-all duration-200"
+          className="p-1 text-sm border rounded-md cursor-pointer outline-none"
         >
-          <option value="December">December</option>
-          <option value="November">November</option>
-          <option value="October">October</option>
+          {["December", "November", "October"].map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
         </select>
       </div>
 
       {/* Teachers List */}
       <div className="space-y-3">
         {teachers.map((teacher, index) => (
-          <div key={index} className="flex items-center justify-between bg-gray-100 p-3 rounded-lg shadow-sm">
-            {/* Left Side - Profile and Name */}
+          <div
+            key={index}
+            className="flex items-center justify-between bg-gray-100 p-3 rounded-lg shadow-sm"
+          >
+            {/* Left Side - Initial Profile and Name */}
             <div className="flex items-center">
-              <img src={teacher.profilePic} alt={teacher.name} className="w-12 h-12 rounded-full mr-4 border" />
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-500 text-white text-lg font-bold mr-4">
+                {getInitials(teacher.name)}
+              </div>
               <div>
                 <h3 className="text-md font-semibold">{teacher.name}</h3>
                 <p className="text-sm text-gray-600">{teacher.subject}</p>
