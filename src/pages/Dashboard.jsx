@@ -20,6 +20,8 @@ import LessonPage from "./Courses"; // ✅ Import LessonPage
 import Schedule from "./Schedule";
 import Chat from "./Chat";
 import Materials from "./Materials";
+import Assessments from "./Assessments";
+import Settings from "./Settings";
 
 
 const Navbar = () => {
@@ -149,6 +151,8 @@ const Navbar = () => {
             {selectedSection === "Schedule" && <Schedule />}
             {selectedSection === "Chat" && <Chat />}
             {selectedSection === "Materials" && <Materials/>}
+            {selectedSection === "Assessments" && <Assessments/>}
+            {selectedSection === "Settings" && <Settings/>}
         </div>
       </div>
     </div>

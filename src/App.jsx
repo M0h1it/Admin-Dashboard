@@ -5,6 +5,8 @@ import Courses from "./pages/Courses";
 import Schedule from "./pages/Schedule";
 import Chat  from "./pages/Chat";
 import Materials from "./pages/Materials";
+import Assessments from "./pages/Assessments";
+import Settings from "./pages/Settings";
 
 const App = () => {
   return (
@@ -16,6 +18,8 @@ const App = () => {
       <Route path="/Schedule" element={<Schedule/>} />
       <Route path="/Chat" element={<Chat/>} />
       <Route path="/Materials" element={<Materials/>} />
+      <Route path="/Assessments" element={<Assessments/>} />
+      <Route path="/Settings" element={<Settings/>} />
     </Routes>
   );
 };
