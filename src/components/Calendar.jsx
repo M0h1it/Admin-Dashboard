@@ -1,82 +1,66 @@
 import React, { useEffect, useState } from "react";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { FaCalendarAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa"; // Icons
+import { FaCalendarAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [events, setEvents] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const auth = getAuth();
   const db = getFirestore();
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchTasks = async () => {
       if (!auth.currentUser) return;
 
-      const eventsRef = collection(db, "calendarEvents");
       const formattedDate = selectedDate.toISOString().split("T")[0];
-      const q = query(eventsRef, where("userId", "==", auth.currentUser.uid), where("date", "==", formattedDate));
+      const tasksRef = collection(db, "tasks");
+      const q = query(tasksRef, where("userId", "==", auth.currentUser.uid), where("date", "==", formattedDate));
       const snapshot = await getDocs(q);
 
-      let eventsList = [];
+      let fetchedTasks = [];
       snapshot.forEach((doc) => {
-        eventsList.push(doc.data());
+        fetchedTasks.push(doc.data());
       });
 
-      setEvents(eventsList);
+      setTasks(fetchedTasks);
     };
 
-    fetchEvents();
+    fetchTasks();
   }, [auth.currentUser, selectedDate]);
 
-  const handlePrevDay = () => {
-    setSelectedDate((prevDate) => new Date(prevDate.setDate(prevDate.getDate() - 1)));
-  };
-
-  const handleNextDay = () => {
-    setSelectedDate((prevDate) => new Date(prevDate.setDate(prevDate.getDate() + 1)));
-  };
-
   return (
-    <div className="">
+    <div className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <FaChevronLeft onClick={handlePrevDay} className="cursor-pointer text-gray-600 text-xl" />
+        <FaChevronLeft onClick={() => setSelectedDate(new Date(selectedDate.setDate(selectedDate.getDate() - 1)))} className="cursor-pointer text-gray-600 text-xl" />
 
         <div className="relative flex items-center">
           <span className="font-semibold">{selectedDate.toDateString()}</span>
-          <FaCalendarAlt
-            className="ml-2 text-gray-600 cursor-pointer"
-            onClick={() => setShowDatePicker(!showDatePicker)}
-          />
+          <FaCalendarAlt className="ml-2 text-gray-600 cursor-pointer" onClick={() => setShowDatePicker(!showDatePicker)} />
           {showDatePicker && (
             <div className="absolute top-8 left-0 bg-white shadow-lg p-2 rounded">
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => {
-                  setSelectedDate(date);
-                  setShowDatePicker(false);
-                }}
-                inline
-              />
+              <DatePicker selected={selectedDate} onChange={(date) => { setSelectedDate(date); setShowDatePicker(false); }} inline />
             </div>
           )}
         </div>
 
-        <FaChevronRight onClick={handleNextDay} className="cursor-pointer text-gray-600 text-xl" />
+        <FaChevronRight onClick={() => setSelectedDate(new Date(selectedDate.setDate(selectedDate.getDate() + 1)))} className="cursor-pointer text-gray-600 text-xl" />
       </div>
 
-      <ul>
-        {events.length > 0 ? (
-          events.map((event, index) => (
-            <li key={index} className="p-2 border-b">
-              <strong>{event.title}</strong> - {event.time}
+      <h3 className="text-lg font-medium">Tasks for {selectedDate.toDateString()}</h3>
+      <ul className="mt-2 space-y-2">
+        {tasks.length > 0 ? (
+          tasks.map((task, index) => (
+            <li key={index} className="p-3 bg-gray-100 rounded-lg flex justify-between">
+              <span className="text-gray-700">{task.title}</span>
+              <span className="text-gray-500">{task.time}</span>
             </li>
           ))
         ) : (
-          <p>No events for this date.</p>
+          <p className="text-gray-500">No tasks for this date.</p>
         )}
       </ul>
     </div>

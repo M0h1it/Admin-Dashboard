@@ -17,6 +17,10 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DashboardContent from "../components/DashboardContent";
 import LessonPage from "./Courses"; // ✅ Import LessonPage
+import Schedule from "./Schedule";
+import Chat from "./Chat";
+import Materials from "./Materials";
+
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
@@ -56,7 +60,7 @@ const Navbar = () => {
             { icon: <MenuBookIcon />, label: "Courses" }, // ✅ Added LessonPage
             { icon: <ScheduleIcon />, label: "Schedule" },
             { icon: <DescriptionIcon />, label: "Materials" },
-            { icon: <ForumIcon />, label: "Forum" },
+            { icon: <ForumIcon />, label: "Chat" },
             { icon: <AssessmentIcon />, label: "Assessments" },
             { icon: <SettingsIcon />, label: "Settings" },
           ].map((item, index) => (
@@ -140,7 +144,11 @@ const Navbar = () => {
 
         {/* Dynamic Content */}
         <div className="p-4">
-          {selectedSection === "Courses" ? <LessonPage /> : <DashboardContent selectedSection={selectedSection} />}
+            {selectedSection === "Dashboard" && <DashboardContent />}
+            {selectedSection === "Courses" && <LessonPage />}
+            {selectedSection === "Schedule" && <Schedule />}
+            {selectedSection === "Chat" && <Chat />}
+            {selectedSection === "Materials" && <Materials/>}
         </div>
       </div>
     </div>

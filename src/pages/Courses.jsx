@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FaSearch, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 const initialCourses = [
   { id: "1", title: "English Lecture", category: "Languages", start: "2025-07-20", progress: 60 },
@@ -35,14 +34,6 @@ const Courses = () => {
     setCourses(courses.filter((course) => course.id !== id));
   };
 
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-    const items = Array.from(courses);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setCourses(items);
-  };
-
   return (
     <div className="flex h-screen bg-gray-100 p-6">
       {/* Main Content */}
@@ -61,46 +52,29 @@ const Courses = () => {
           </div>
         </div>
 
-        {/* Course List with Drag and Drop */}
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="courses">
-            {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-4 ">
-                {courses
-                  .filter((course) => course.title.toLowerCase().includes(searchTerm.toLowerCase()))
-                  .map((course, index) => (
-                    <Draggable key={course.id} draggableId={course.id} index={index}>
-                      {(provided) => (
-                        <div
-                          // ref={provided.innerRef}
-                          // {...provided.draggableProps}
-                          // {...provided.dragHandleProps}
-                          className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center"
-                        >
-                          <div>
-                            <h2 className="text-lg font-bold">{course.title}</h2>
-                            <p className="text-gray-500">{course.category}</p>
-                            <p className="text-gray-600">Start: {course.start}</p>
-                            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                              <div
-                                className="bg-blue-500 h-2 rounded-full"
-                                style={{ width: `${course.progress}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                          <div className="flex space-x-3">
-                            {/* <button className="text-blue-500 cursor-pointer" onClick={() => setEditId(course.id)}><FaEdit /></button> */}
-                            <button className="text-red-500 cursor-pointer" onClick={() => handleDeleteCourse(course.id)}><FaTrash /></button>
-                          </div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                {provided.placeholder}
+        {/* Course List Without Drag and Drop */}
+        <div className="space-y-4">
+          {courses
+            .filter((course) => course.title.toLowerCase().includes(searchTerm.toLowerCase()))
+            .map((course) => (
+              <div key={course.id} className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center">
+                <div>
+                  <h2 className="text-lg font-bold">{course.title}</h2>
+                  <p className="text-gray-500">{course.category}</p>
+                  <p className="text-gray-600">Start: {course.start}</p>
+                  <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                    <div
+                      className="bg-blue-500 h-2 rounded-full"
+                      style={{ width: `${course.progress}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="flex space-x-3">
+                  <button className="text-red-500 cursor-pointer" onClick={() => handleDeleteCourse(course.id)}><FaTrash /></button>
+                </div>
               </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+            ))}
+        </div>
       </div>
 
       {/* Add Courses Section */}
