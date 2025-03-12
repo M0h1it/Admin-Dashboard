@@ -1,79 +1,88 @@
 import React, { useState, useEffect } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
 
-const PerformanceChart = () => {
-  const [data, setData] = useState([]);
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import { motion } from "framer-motion"; // For animation
+
+const performanceData = {
+  December: [
+    { subject: "Math", completed: 40, incomplete: 10 },
+    { subject: "Science", completed: 35, incomplete: 15 },
+    { subject: "English", completed: 30, incomplete: 20 },
+    { subject: "History", completed: 45, incomplete: 5 },
+    { subject: "Physics", completed: 50, incomplete: 8 },
+  ],
+  November: [
+    { subject: "Math", completed: 38, incomplete: 12 },
+    { subject: "Science", completed: 33, incomplete: 17 },
+    { subject: "English", completed: 28, incomplete: 22 },
+    { subject: "History", completed: 42, incomplete: 7 },
+    { subject: "Physics", completed: 48, incomplete: 9 },
+  ],
+};
+
+const PerformanceSection = () => {
   const [month, setMonth] = useState("December");
-  const auth = getAuth();
-  const db = getFirestore();
+  const [data, setData] = useState(performanceData[month]);
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      if (!auth.currentUser) return;
-      
-      const tasksRef = collection(db, "tasks");
-      const q = query(tasksRef, where("userId", "==", auth.currentUser.uid));
-      const snapshot = await getDocs(q);
-      
-      let completed = 0;
-      let incomplete = 0;
-      let lateCompleted = 0;
-      
-      snapshot.forEach((doc) => {
-        const task = doc.data();
-        if (task.status === "completed" && task.month === month) completed++;
-        else if (task.status === "incomplete" && task.month === month) incomplete++;
-        else if (task.status === "late_completed" && task.month === month) lateCompleted++;
-      });
-      
-      setData([
-        { name: "Completed", value: completed },
-        { name: "Incomplete", value: incomplete },
-        { name: "Late Completed", value: lateCompleted },
-      ]);
-    };
-    
-    fetchTasks();
-  }, [auth.currentUser, month]);
+    setData([]);
+    setTimeout(() => setData(performanceData[month]), 300); // Animation delay
+  }, [month]);
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-md">
-  <div className="flex justify-between items-center mb-2">
-    <div className="flex items-center space-x-2">
-      <p className="text-gray-600 text-sm font-semibold">Best Lessons:</p>
-      <span className="text-xl font-bold text-black">95.4</span>
-    </div>
-    <select 
-      value={month} 
-      onChange={(e) => setMonth(e.target.value)}
-      className="p-1 text-sm border rounded-md cursor-pointer transition-all duration-200">
-      <option value="December">December</option>
-      <option value="November">November</option>
-      <option value="October">October</option>
-    </select>
-  </div>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className=""
+    >
+      {/* Header Section */}
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex items-center space-x-2">
+          <p className="text-gray-600 text-sm font-semibold">Best Lessons:</p>
+          <span className="text-xl font-bold text-black">95.4%</span>
+        </div>
+        <select
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+          className="p-1 text-sm border rounded-md cursor-pointer transition-all duration-200"
+        >
+          {Object.keys(performanceData).map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+      </div>
 
-  {/* Bar Chart */}
-  <ResponsiveContainer width="100%" height={250}>
-    <BarChart data={data}>
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Bar dataKey="value" fill="#4CAF50" />
-    </BarChart>
-  </ResponsiveContainer>
+      {/* Performance Bar Chart */}
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart data={data}>
+          <XAxis dataKey="subject" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="completed" fill="#1E3A8A" barSize={30} />
+          <Bar dataKey="incomplete" fill="#93C5FD" barSize={30} />
+        </BarChart>
+      </ResponsiveContainer>
 
-  {/* All Lessons Button */}
-  <div className="text-right mt-2">
-    <button className="text-black-500 text-sm font-medium cursor-pointer bg-white border rounded-md px-2 py-1">
-      All Lessons
-    </button>
-  </div>
-</div>
-
+      {/* All Lessons Button */}
+      <div className="text-right mt-2">
+        <button className="text-black text-sm font-medium cursor-pointer bg-white border rounded-md px-2 py-1">
+          All Lessons
+        </button>
+      </div>
+    </motion.div>
   );
 };
 
-export default PerformanceChart;
+export default PerformanceSection;

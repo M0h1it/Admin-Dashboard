@@ -25,11 +25,13 @@ const HelloMessage = () => {
 
   return (
     <div className="">
-      <h2 className="text-lg font-semibold">Hello, {user ? user.displayName : "User"}!</h2>
-      <p className="text-sm text-gray-600">
+      <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
+        Hello, {user ? user.displayName : "User"}!
+      </h2>
+      <p className="text-sm md:text-base text-gray-600 mt-2">
         {remainingTasks > 0
           ? `You have ${remainingTasks} tasks left for today! Let's get started!`
-          : "All tasks completed! Great job!"}
+          : "All tasks completed! Great job! 🎉"}
       </p>
     </div>
   );
