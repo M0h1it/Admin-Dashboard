@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { FaCalendarAlt } from "react-icons/fa"; // Calendar icon
+import { FaCalendarAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa"; // Icons
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -41,22 +41,31 @@ const Calendar = () => {
   };
 
   return (
-    <div className="p-4 bg-white shadow rounded-lg">
+    <div className="">
       <div className="flex items-center justify-between mb-4">
-        <button onClick={handlePrevDay} className="px-3 py-1 bg-gray-200 rounded">Previous</button>
-        <div className="relative">
+        <FaChevronLeft onClick={handlePrevDay} className="cursor-pointer text-gray-600 text-xl" />
+
+        <div className="relative flex items-center">
           <span className="font-semibold">{selectedDate.toDateString()}</span>
           <FaCalendarAlt
-            className="inline-block ml-2 text-gray-600 cursor-pointer"
+            className="ml-2 text-gray-600 cursor-pointer"
             onClick={() => setShowDatePicker(!showDatePicker)}
           />
           {showDatePicker && (
             <div className="absolute top-8 left-0 bg-white shadow-lg p-2 rounded">
-              <DatePicker selected={selectedDate} onChange={(date) => { setSelectedDate(date); setShowDatePicker(false); }} inline />
+              <DatePicker
+                selected={selectedDate}
+                onChange={(date) => {
+                  setSelectedDate(date);
+                  setShowDatePicker(false);
+                }}
+                inline
+              />
             </div>
           )}
         </div>
-        <button onClick={handleNextDay} className="px-3 py-1 bg-gray-200 rounded">Next</button>
+
+        <FaChevronRight onClick={handleNextDay} className="cursor-pointer text-gray-600 text-xl" />
       </div>
 
       <ul>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell } from "recharts";
 
 const COLORS = ["#4F75FE", "#62C48F", "#FFBB28", "#FF8042"];
 
@@ -23,12 +23,12 @@ const MyVisit = () => {
   const data = monthData[selectedMonth];
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-md">
-      {/* Month Selection */}
+    <div className="">
+      {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">My Visit</h2>
+        
         <select
-          className="border rounded-md px-2 py-1 text-sm cursor-pointer"
+          className="border rounded-md px-3 py-1 text-sm cursor-pointer outline-none"
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(e.target.value)}
         >
@@ -40,36 +40,34 @@ const MyVisit = () => {
         </select>
       </div>
 
-      {/* Graphs */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* Graphs Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
         {data.map((item, index) => (
-          <div key={index} className="flex flex-col items-center relative">
-            <ResponsiveContainer width={80} height={80}>
-              <PieChart>
+          <div key={index} className="flex flex-col items-center space-y-2">
+            <div className="relative">
+              <PieChart width={100} height={100}>
                 <Pie
                   data={[item]}
                   dataKey="value"
                   cx="50%"
                   cy="50%"
-                  innerRadius={25}
-                  outerRadius={35}
-                  fill={item.color}
+                  innerRadius={30}
+                  outerRadius={45}
                   startAngle={90}
                   endAngle={90 + (360 * item.value) / 100}
-                  isAnimationActive={false}
+                  isAnimationActive={true}
                 >
-                  <Cell key={`cell-${index}`} fill={item.color} />
+                  <Cell fill={item.color} />
                 </Pie>
               </PieChart>
-            </ResponsiveContainer>
-
-            {/* Percentage in the middle */}
-            <div className="absolute text-xs font-semibold mt-8">
-              {item.value}%
+              {/* Percentage in Center */}
+              <div className="absolute inset-0 flex items-center justify-center text-xs font-semibold">
+                {item.value}%
+              </div>
             </div>
 
             {/* Subject Name */}
-            <span className="text-sm font-medium mt-2">{item.name}</span>
+            <span className="text-sm font-medium">{item.name}</span>
           </div>
         ))}
       </div>
