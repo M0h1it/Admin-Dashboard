@@ -113,7 +113,7 @@ const Assessments = () => {
 
       {/* Create Assessment Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-blue-100 bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 bg-blue-100 bg-opacity-51 flex justify-center items-center">
           <div className="bg-white p-6 rounded-md shadow-md w-1/3">
             <h3 className="text-xl font-semibold mb-4">Create New Assessment</h3>
             <input
