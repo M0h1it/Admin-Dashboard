@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { FaSearch, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 
 const initialCourses = [
-  { id: "1", title: "English Lecture", category: "Languages", start: "2025-07-20", progress: 60 },
-  { id: "2", title: "Design Strategy", category: "UI/UX Design", start: "2025-07-22", progress: 40 },
-  { id: "3", title: "Business Lecture", category: "Marketing | Finance", start: "2025-07-26", progress: 70 },
+  
 ];
 
 const categories = ["Languages", "UI/UX Design", "Marketing | Finance", "Web Development", "Mobile Development"];
