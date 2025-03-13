@@ -16,7 +16,7 @@ const Login = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/"); // Redirect after login
+      navigate("/Dashboard"); // Redirect after login
     } catch (err) {
       setError(err.message); // Show actual Firebase error for debugging
     }
@@ -26,7 +26,7 @@ const Login = () => {
     try {
       await signInWithPopup(auth, provider);
       alert("Google Sign-In successful!");
-      navigate("/");
+      navigate("/Dashboard"); // Redirect after login
     } catch (err) {
       console.error("Google Sign-In Failed:", err.message);
       setError(err.message);
