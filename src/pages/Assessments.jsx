@@ -1,7 +1,5 @@
-import { useState } from "react";
-import {
-  FaPlus, FaEdit, FaTrash, FaCalendarAlt, FaEye, FaClock, FaBook, FaChartBar, FaUsers
-} from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaPlus, FaEdit, FaTrash, FaEye } from "react-icons/fa";
 
 const Assessments = () => {
   const [assessments, setAssessments] = useState([]);
@@ -16,15 +14,28 @@ const Assessments = () => {
     status: "Active",
   });
 
-  // Handle Input Change for New Assessment
+  // 🔹 Load Assessments from LocalStorage on Component Mount
+  useEffect(() => {
+    const storedAssessments = JSON.parse(localStorage.getItem("assessments")) || [];
+    setAssessments(storedAssessments);
+  }, []);
+
+  // 🔹 Save Assessments to LocalStorage
+  const saveToLocalStorage = (data) => {
+    localStorage.setItem("assessments", JSON.stringify(data));
+  };
+
+  // 🔹 Handle Input Change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewAssessment({ ...newAssessment, [name]: value });
   };
 
-  // Create Assessment
+  // 🔹 Create Assessment
   const handleCreateAssessment = () => {
-    setAssessments([...assessments, { id: Date.now(), ...newAssessment }]);
+    const updatedAssessments = [...assessments, { id: Date.now(), ...newAssessment }];
+    setAssessments(updatedAssessments);
+    saveToLocalStorage(updatedAssessments);
     setShowCreateModal(false);
     setNewAssessment({
       title: "", description: "", type: "MCQs", difficulty: "Easy",
@@ -32,9 +43,11 @@ const Assessments = () => {
     });
   };
 
-  // Delete Assessment
+  // 🔹 Delete Assessment
   const handleDeleteAssessment = (id) => {
-    setAssessments(assessments.filter((assessment) => assessment.id !== id));
+    const updatedAssessments = assessments.filter((assessment) => assessment.id !== id);
+    setAssessments(updatedAssessments);
+    saveToLocalStorage(updatedAssessments);
   };
 
   return (
@@ -100,7 +113,7 @@ const Assessments = () => {
 
       {/* Create Assessment Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 bg-blue-100 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-md shadow-md w-1/3">
             <h3 className="text-xl font-semibold mb-4">Create New Assessment</h3>
             <input
