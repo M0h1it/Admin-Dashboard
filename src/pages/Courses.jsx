@@ -1,35 +1,33 @@
-import React, { useState } from "react";
-import { FaSearch, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
-
-const initialCourses = [
-  
-];
+import React, { useState, useEffect } from "react";
+import { FaSearch, FaTrash, FaPlus } from "react-icons/fa";
 
 const categories = ["Languages", "UI/UX Design", "Marketing | Finance", "Web Development", "Mobile Development"];
 
 const Courses = () => {
-  const [courses, setCourses] = useState(initialCourses);
+  const [courses, setCourses] = useState(() => {
+    const savedCourses = localStorage.getItem("courses");
+    return savedCourses ? JSON.parse(savedCourses) : [];
+  });
+
   const [newCourse, setNewCourse] = useState({ title: "", category: "Languages", start: "", progress: 0 });
-  const [editId, setEditId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Save courses to localStorage when courses state changes
+  useEffect(() => {
+    localStorage.setItem("courses", JSON.stringify(courses));
+  }, [courses]);
 
   const handleAddCourse = () => {
     if (newCourse.title && newCourse.start) {
-      setCourses([...courses, { ...newCourse, id: Date.now().toString() }]);
+      const updatedCourses = [...courses, { ...newCourse, id: Date.now().toString() }];
+      setCourses(updatedCourses);
       setNewCourse({ title: "", category: "Languages", start: "", progress: 0 });
     }
   };
 
-  const handleEditCourse = (id) => {
-    const updatedCourses = courses.map((course) =>
-      course.id === id ? { ...course, title: newCourse.title, category: newCourse.category, start: newCourse.start, progress: newCourse.progress } : course
-    );
-    setCourses(updatedCourses);
-    setEditId(null);
-  };
-
   const handleDeleteCourse = (id) => {
-    setCourses(courses.filter((course) => course.id !== id));
+    const updatedCourses = courses.filter((course) => course.id !== id);
+    setCourses(updatedCourses);
   };
 
   return (
@@ -50,7 +48,7 @@ const Courses = () => {
           </div>
         </div>
 
-        {/* Course List Without Drag and Drop */}
+        {/* Course List */}
         <div className="space-y-4">
           {courses
             .filter((course) => course.title.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -68,7 +66,9 @@ const Courses = () => {
                   </div>
                 </div>
                 <div className="flex space-x-3">
-                  <button className="text-red-500 cursor-pointer" onClick={() => handleDeleteCourse(course.id)}><FaTrash /></button>
+                  <button className="text-red-500 cursor-pointer" onClick={() => handleDeleteCourse(course.id)}>
+                    <FaTrash />
+                  </button>
                 </div>
               </div>
             ))}
@@ -81,7 +81,7 @@ const Courses = () => {
         <input
           type="text"
           placeholder="Course Title"
-          className="border p-2 w-full mb-3 rounded-md "
+          className="border p-2 w-full mb-3 rounded-md"
           value={newCourse.title}
           onChange={(e) => setNewCourse({ ...newCourse, title: e.target.value })}
         />
@@ -91,7 +91,9 @@ const Courses = () => {
           onChange={(e) => setNewCourse({ ...newCourse, category: e.target.value })}
         >
           {categories.map((category, index) => (
-            <option key={index} value={category}>{category}</option>
+            <option key={index} value={category}>
+              {category}
+            </option>
           ))}
         </select>
         <input
