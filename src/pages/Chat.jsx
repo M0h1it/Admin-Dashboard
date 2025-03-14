@@ -1,17 +1,26 @@
 import { useState, useRef, useEffect } from "react";
 import { FaPaperPlane, FaPlus } from "react-icons/fa";
-import { db } from "../firebase/firebaseConfig";
+import { db, storage } from "../firebase/firebaseConfig";
 import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
-import { auth } from "../firebase/firebaseConfig"; // Import Firebase Auth
+import { auth } from "../firebase/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [image, setImage] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const messagesEndRef = useRef(null);
 
   // 🔹 Get current logged-in user
-  const currentUser = auth.currentUser ? auth.currentUser.displayName || "Anonymous" : "Guest";
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user ? { uid: user.uid, name: user.displayName || "Anonymous" } : null);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const messagesRef = collection(db, "messages");
 
@@ -31,17 +40,27 @@ const ChatPage = () => {
 
   // 🔹 Send a message with sender name
   const sendMessage = async () => {
+    if (!currentUser) {
+      alert("You need to sign in to send messages.");
+      return;
+    }
+
     if (newMessage.trim() === "" && !image) return;
+
+    let imageUrl = null;
+    if (image) {
+      const imageRef = ref(storage, `chatImages/${Date.now()}_${image.name}`);
+      await uploadBytes(imageRef, image);
+      imageUrl = await getDownloadURL(imageRef);
+    }
 
     const messageData = {
       text: newMessage,
-      sender: currentUser, // Store actual user name
+      sender: currentUser.name,
+      userId: currentUser.uid,
       timestamp: serverTimestamp(),
+      image: imageUrl || null,
     };
-
-    if (image) {
-      messageData.image = image;
-    }
 
     await addDoc(messagesRef, messageData);
     setNewMessage("");
@@ -52,11 +71,7 @@ const ChatPage = () => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setImage(file);
     }
   };
 
@@ -70,7 +85,7 @@ const ChatPage = () => {
       <h3 className="text-lg font-semibold">Chat</h3>
       <div className="flex-1 overflow-y-auto p-4 bg-gray-50 rounded-md shadow-md">
         {messages.map((msg) => {
-          const isCurrentUser = msg.sender === currentUser;
+          const isCurrentUser = currentUser && msg.userId === currentUser.uid;
           return (
             <div
               key={msg.id}
@@ -91,6 +106,8 @@ const ChatPage = () => {
         })}
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Input Section */}
       <div className="flex items-center mt-2 border rounded-md p-2 bg-white">
         <label className="cursor-pointer">
           <FaPlus className="text-blue-600 mr-2" />
